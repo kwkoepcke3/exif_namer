@@ -28,9 +28,10 @@ def main():
 
     new_name = f"{input_name}_{new_name_suffix}"
     if args.output_dir:
+        print(f"{args.output_dir}/{new_name}")
         shutil.copy2(args.input_file, f"{args.output_dir}/{new_name}")
     else:
-        print(os.path.dirname(args.input_file) + f"/{new_name}")
+        print(f"{os.path.dirname(args.input_file)}/{new_name}")
         shutil.copy2(args.input_file, f"{os.path.dirname(args.input_file)}/{new_name}")
     
     
