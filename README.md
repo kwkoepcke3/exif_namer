@@ -27,3 +27,5 @@ if --directory is given then the input is a directory, and all files in the dire
 + No copy will be made if the extension is not a known image extension
 + No copy will be made if the output file already exists
 + No copy will be made if no exif data is found
+
+If the --test flag is given, then no copies will be made but the copy log will be printed, showing errors and what would have been copied if it was not a dry run
