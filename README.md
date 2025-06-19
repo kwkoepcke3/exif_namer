@@ -13,8 +13,17 @@ if the --output-dir is specified, copy to that directory
 
 suffix: {year}-{month}-{day}_{hour}-{minute}-{second}{ext}
 
-example: 
+```sh
+usage: ExifNamer [-h] [-o OUTPUT_DIR] [--directory] [--test] input_file
 ```
+
+example: 
+```sh
 ./exif_renamer.py $HOME/unnamed.jpg
 /home/mayo/unnamed_2010-11-24_18-28-47.jpg
 ```
+if --directory is given then the input is a directory, and all files in the directory/* will be copied
+
++ No copy will be made if the extension is not a known image extension
++ No copy will be made if the output file already exists
++ No copy will be made if no exif data is found
