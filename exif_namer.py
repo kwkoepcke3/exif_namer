@@ -93,7 +93,7 @@ def exif_rename(input_file, output_dir=None, dry_run=False, error_quit=False):
 
 def exit_on_error(error_quit=False):
     if error_quit:
-        print("EXITING...")
+        print("EXIT ON ERROR SET! EXITING...")
         sys.exit(-1)
     else:
         print("SKIPPING!")
