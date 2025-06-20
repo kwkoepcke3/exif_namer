@@ -83,9 +83,11 @@ def exif_rename(input_file, output_dir=None, dry_run=False, error_quit=False):
         copy_to = f"{os.path.dirname(input_file)}/{new_name}"
 
     # if our suffix already exists, we may have copied this picture already.
-    # We have to check if for <name>_suffix_suffix, <name>_suffix exists
+    # We have to check if for <name>_suffix_suffix_..., <name>_suffix exists
     copy_to_dir = os.path.dirname(copy_to)
+    # if our suffix is in any file name
     if any([new_name_suffix in fname for fname in os.listdir(copy_to_dir)]):
+        # for a_random_name_date_time_date_time.ext, check if a_random_name_date_time.ext exists
         for fname in os.listdir(copy_to_dir):
             split = fname.split("_")
 
