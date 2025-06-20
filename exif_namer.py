@@ -41,14 +41,11 @@ class Args:
     error_quit: bool
 
 
-def extract_exif_data(input_file: str, error_quit=False) -> ExifData:
+def extract_exif_data(input_file: str, error_quit=False) -> ExifData | None:
     img = Image.open(input_file)
     exif_data = img._getexif()
-    if DATE_TIME_TAKEN_K not in exif_data:
-        print(f"ERROR! {input_file} DOES NOT HAVE EXIF DATA! IGNORING")
-
-        exit_on_error(error_quit)
-        return
+    if exif_data is None or DATE_TIME_TAKEN_K not in exif_data:
+        return None
     name_raw = exif_data[DATE_TIME_TAKEN_K]
 
     date, time = name_raw.split()
@@ -69,6 +66,11 @@ def exif_rename(input_file, output_dir=None, dry_run=False, error_quit=False):
     input_name_ext = os.path.basename(input_file)
     input_name = os.path.splitext(input_name_ext)[0]
     exif: ExifData = extract_exif_data(input_file, error_quit)
+    if exif is None:
+        print(f"ERROR! {input_file} DOES NOT HAVE EXIF DATA! IGNORING")
+        exit_on_error(error_quit)
+        return
+
     new_name_suffix = f"{exif.date.year}-{exif.date.month}-{exif.date.day}_{exif.time.hour}-{exif.time.minute}-{exif.time.second}{ext}"
 
     new_name = f"{input_name}_{new_name_suffix}"
@@ -80,6 +82,7 @@ def exif_rename(input_file, output_dir=None, dry_run=False, error_quit=False):
         copy_from = input_file
         copy_to = f"{os.path.dirname(input_file)}/{new_name}"
 
+    # TODO check if copy_to is a 2010-11-24_18-28-47_2010-11-24_18-28-47... pattern
     if os.path.exists(copy_to):
         print(f"ERROR! {copy_to} ALREADY EXISTS! WILL NOT REPLACE!")
 
@@ -148,6 +151,7 @@ Does not copy if in dry_run mode!
                 f"ERROR! {args.input} IS NOT A VALID DIRECTORY! DO NOT KNOW WHERE TO COPY TO!"
             )
             exit_on_error()
+            return
 
         # args.input will be a directory if --directory is specified
         for file in os.listdir(args.input):
@@ -158,6 +162,7 @@ Does not copy if in dry_run mode!
         if not os.path.isfile(args.input):
             print(f"ERROR! {args.input} IS NOT A VALID FILE! CANNOT COPY!")
             exit_on_error()
+            return
 
         exif_rename(args.input, args.output_dir, args.dry_run, args.error_quit)
 
