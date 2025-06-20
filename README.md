@@ -36,7 +36,6 @@ if image file destination already exists! Does not copy if image file does not h
 example: 
 ```sh
 ./exif_namer test/test_in --directory --output-dir test/test_out --dry-run
-COPY FROM test/test_in/boys_dance_2010-11-24_18-28-47.jpg TO test/test_out/boys_dance_2010-11-24_18-28-47_2010-11-24_18-28-47.jpg
 ERROR! test/test_in/forest.jpeg DOES NOT HAVE EXIF DATA! IGNORING
 SKIPPING!
 COPY FROM test/test_in/boys_dance.jpg TO test/test_out/boys_dance_2010-11-24_18-28-47.jpg
