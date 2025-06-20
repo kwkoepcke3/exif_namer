@@ -67,7 +67,7 @@ def exif_rename(input_file, output_dir=None, dry_run=False, error_quit=False):
     input_name = os.path.splitext(input_name_ext)[0]
     exif: ExifData = extract_exif_data(input_file, error_quit)
     if exif is None:
-        print(f"ERROR! {input_file} DOES NOT HAVE EXIF DATA! IGNORING")
+        print(f"ERROR! {input_file} DOES NOT HAVE EXIF DATA!")
         exit_on_error(error_quit)
         return
 
