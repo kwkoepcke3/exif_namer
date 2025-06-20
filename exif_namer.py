@@ -173,6 +173,10 @@ Does not copy if in dry_run mode!
 
         # args.input will be a directory if --directory is specified
         for file in os.listdir(args.input):
+            if not os.path.isfile(f"{args.input}/{file}"):
+                # ignore all dirs
+                continue
+
             exif_rename(
                 f"{args.input}/{file}", args.output_dir, args.dry_run, args.error_quit
             )
