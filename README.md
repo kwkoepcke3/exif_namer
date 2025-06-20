@@ -14,18 +14,32 @@ if the --output-dir is specified, copy to that directory
 suffix: {year}-{month}-{day}_{hour}-{minute}-{second}{ext}
 
 ```sh
-usage: exif_namer [-h] [-o OUTPUT_DIR] [--directory] [--test] input_file
+usage: exif_namer [-h] [-o OUTPUT_DIR] [-d] [-t] [-e] input
+
+Copies image file with date taken as name suffix
+
+positional arguments:
+  input                 The input file or directory to copy image file(s) from
+
+options:
+  -h, --help            show this help message and exit
+  -o, --output-dir OUTPUT_DIR
+                        If set, output copies to this directory
+  -d, --directory       If set, the input is a directory
+  -t, --dry-run         If set, do not copy, only show log
+  -e, --error-quit      If set, quit on error. By default in directory mode will not quit if encountering an error, and will continue to the next file if possible
+
+Copies image file with date taken as name suffix Does not copy if image file has unknown extension! (['.3gp', '.jpg', '.jpeg', '.png', '.gif', '.mp4', '.mov', '.avi']) Does not copy
+if image file destination already exists! Does not copy if image file does not have appropriate exif data! Does not copy if in dry_run mode!
 ```
 
 example: 
 ```sh
-./exif_namer.py $HOME/unnamed.jpg
-/home/mayo/unnamed_2010-11-24_18-28-47.jpg
+./exif_namer test/test_in --directory --output-dir test/test_out --dry-run
+COPY FROM test/test_in/boys_dance_2010-11-24_18-28-47.jpg TO test/test_out/boys_dance_2010-11-24_18-28-47_2010-11-24_18-28-47.jpg
+ERROR! test/test_in/forest.jpeg DOES NOT HAVE EXIF DATA! IGNORING
+SKIPPING!
+COPY FROM test/test_in/boys_dance.jpg TO test/test_out/boys_dance_2010-11-24_18-28-47.jpg
+ERROR! test/test_in/stairs.jpeg DOES NOT HAVE EXIF DATA! IGNORING
+SKIPPING!
 ```
-if --directory is given then the input is a directory, and all files in the directory/* will be copied
-
-+ No copy will be made if the extension is not a known image extension
-+ No copy will be made if the output file already exists
-+ No copy will be made if no exif data is found
-
-If the --test flag is given, then no copies will be made but the copy log will be printed, showing errors and what would have been copied if it was not a dry run
