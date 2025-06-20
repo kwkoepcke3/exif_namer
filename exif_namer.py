@@ -82,7 +82,23 @@ def exif_rename(input_file, output_dir=None, dry_run=False, error_quit=False):
         copy_from = input_file
         copy_to = f"{os.path.dirname(input_file)}/{new_name}"
 
-    # TODO check if copy_to is a 2010-11-24_18-28-47_2010-11-24_18-28-47... pattern
+    # if our suffix already exists, we may have copied this picture already.
+    # We have to check if for <name>_suffix_suffix, <name>_suffix exists
+    copy_to_dir = os.path.dirname(copy_to)
+    if any([new_name_suffix in fname for fname in os.listdir(copy_to_dir)]):
+        for fname in os.listdir(copy_to_dir):
+            split = fname.split("_")
+
+            # get up to the suffix, since the suffix is date_time.ext anything before must be the basename
+            reconstructed = "_".join(split[: len(split) - 2])
+
+            full_recon = f"{copy_to_dir}/{reconstructed}_{new_name_suffix}"
+            if os.path.exists(full_recon):
+                print(f"ERROR! {full_recon} ALREADY EXISTS! WILL NOT REPLACE!")
+
+                exit_on_error(error_quit)
+                return
+
     if os.path.exists(copy_to):
         print(f"ERROR! {copy_to} ALREADY EXISTS! WILL NOT REPLACE!")
 
