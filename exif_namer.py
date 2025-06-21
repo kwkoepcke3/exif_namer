@@ -222,6 +222,11 @@ Does not copy if in dry_run mode!
 
         exif_rename(args.input, args.output_dir, args.dry_run, args.error_quit, args.verbose, log)
 
+    n_total = len(log)
+    n_moved = sum(map(lambda entry: 1 if entry.success else 0, log))
+
+    print(f"copied {n_moved}/{n_total}")
+
     if args.report:
         print("======= REPORT =======")
         for item in log:
