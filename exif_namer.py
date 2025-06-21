@@ -229,8 +229,9 @@ Does not copy if in dry_run mode!
 
     if args.report:
         print("======= REPORT =======")
+        print(f"{'Success,':10s}{'Copy From,':50s}\t{'Copy To,':60s}\t{'Exif Data':30s}")
         for item in log:
-            print(f"{str(item.success):10s}{item.copy_from:50s}\t{str(item.copy_to):60s}\t{str(item.exif_data):30s}")
+            print(f"{str(item.success)+',':10s}{item.copy_from+',':50s}\t{str(item.copy_to)+',':60s}\t{str(item.exif_data):30s}")
 
 
 if __name__ == "__main__":
