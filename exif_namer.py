@@ -78,13 +78,14 @@ def exif_rename(input_file, output_dir=None, dry_run=False, error_quit=False, ve
     input_name_ext = os.path.basename(input_file)
     input_name = os.path.splitext(input_name_ext)[0]
     exif: ExifData = extract_exif_data(input_file, error_quit)
-    exif_str = f"{exif.date.year}-{exif.date.month}-{exif.date.day} {exif.time.hour}:{exif.time.minute}:{exif.time.second}"
     if exif is None:
         verbose_print(f"ERROR! {input_file} DOES NOT HAVE EXIF DATA!", verbose)
         log.append(LogEntry(False, input_file, None, None))
 
         exit_on_error(error_quit, verbose)
         return
+    exif_str = f"{exif.date.year}-{exif.date.month}-{exif.date.day} {exif.time.hour}:{exif.time.minute}:{exif.time.second}"
+
 
     new_name_suffix = f"{exif.date.year}-{exif.date.month}-{exif.date.day}_{exif.time.hour}-{exif.time.minute}-{exif.time.second}{ext}"
 
