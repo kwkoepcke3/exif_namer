@@ -87,9 +87,9 @@ def exif_rename(input_file, output_dir=None, dry_run=False, error_quit=False, ve
     exif_str = f"{exif.date.year}-{exif.date.month}-{exif.date.day} {exif.time.hour}:{exif.time.minute}:{exif.time.second}"
 
 
-    new_name_suffix = f"{exif.date.year}-{exif.date.month}-{exif.date.day}_{exif.time.hour}-{exif.time.minute}-{exif.time.second}{ext}"
+    new_name_prefix = f"{exif.date.year}{exif.date.month}{exif.date.day}{exif.time.hour}"
 
-    new_name = f"{input_name}_{new_name_suffix}"
+    new_name = f"{new_name_prefix}_{input_name}{ext}"
 
     if output_dir:
         copy_from = input_file
@@ -98,19 +98,21 @@ def exif_rename(input_file, output_dir=None, dry_run=False, error_quit=False, ve
         copy_from = input_file
         copy_to = f"{os.path.dirname(input_file)}/{new_name}"
 
-    # if our suffix already exists, we may have copied this picture already.
-    # We have to check if for <name>_suffix_suffix_..., <name>_suffix exists
+    # prefix_name_name_name.ext
+    # prefix_name.ext
     copy_to_dir = os.path.dirname(copy_to)
-    # if our suffix is in any file name
-    if any([new_name_suffix in fname for fname in os.listdir(copy_to_dir)]):
-        # for a_random_name_date_time_date_time.ext, check if a_random_name_date_time.ext exists
+    # if our prefix is in any file name
+    if any([new_name_prefix in fname for fname in os.listdir(copy_to_dir)]):
+        # for prefix_name.ext, check if prefix_prefix_name.ext exists
         for fname in os.listdir(copy_to_dir):
             split = fname.split("_")
 
-            # get up to the suffix, since the suffix is date_time.ext anything before must be the basename
-            reconstructed = "_".join(split[: len(split) - 2])
-            reconstructed_w_suffix = f"{reconstructed}_{new_name_suffix}"
-            full_recon = f"{copy_to_dir}/{reconstructed_w_suffix}"
+            # get everything after the suffix
+            reconstructed = "_".join(split[1: ])
+            reconstructed, recon_ext = os.path.splitext(reconstructed)
+            print(f"RECONFSTRUCTED: {reconstructed}")
+            reconstructed_w_suffix = f"{new_name_prefix}_{reconstructed}"
+            full_recon = f"{copy_to_dir}/{reconstructed_w_suffix}{recon_ext}"
             if os.path.exists(full_recon) and reconstructed_w_suffix == new_name:
                 verbose_print(f"ERROR! {full_recon} ALREADY EXISTS! WILL NOT REPLACE!", verbose)
                 log.append(LogEntry(False, input_file, copy_to, exif_str))
