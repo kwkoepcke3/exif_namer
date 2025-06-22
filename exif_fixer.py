@@ -40,7 +40,6 @@ def handle_fix(directory, verbose=False, dry_run=False):
     #   if exif does exist at this point, and there are values in the queue, replace all queue values with exif
     dir = os.listdir(directory)
     dir.sort()
-    print(dir)
 
     first_valid_exif_path = None
     for file in dir:
