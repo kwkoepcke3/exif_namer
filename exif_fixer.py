@@ -2,6 +2,7 @@
 import argparse
 import os
 from PIL import Image, ExifTags
+from pathlib import Path
 
 DATE_TIME_TAKEN_K = 36867
 
@@ -18,18 +19,21 @@ def main():
 
     handle_fix(args.directory, args.verbose, args.dry_run)
 
-def replace_exif(replace_from: Image, replace_to: Image, replace_to_path):
-    exif_from = replace_from._getexif()
-    exif_to = replace_to._getexif()
+def replace_exif(replace_from: Path, replace_to: Path):
+    image_from = Image.open(replace_from)
+    image_to = Image.open(replace_to)
+
+    exif_from = image_from._getexif()
+    exif_to = image_to._getexif()
     
     if exif_to is None:
         exif_to = exif_from
-        exif_to_actual = replace_from.getexif()
+        exif_to_actual = image_from.getexif()
     else:
-        exif_to_actual = replace_to.getexif()
+        exif_to_actual = image_to.getexif()
 
     exif_to_actual[DATE_TIME_TAKEN_K] = exif_from[DATE_TIME_TAKEN_K]
-    replace_to.save(replace_to_path, exif=exif_to_actual)
+    image_to.save(replace_to, exif=exif_to_actual)
 
 def handle_fix(directory, verbose=False, dry_run=False):
     to_fix = []
@@ -52,6 +56,7 @@ def handle_fix(directory, verbose=False, dry_run=False):
             continue
 
         exif = image._getexif()
+        image.close()
 
         if exif is None or DATE_TIME_TAKEN_K not in exif:
             continue
@@ -67,16 +72,19 @@ def handle_fix(directory, verbose=False, dry_run=False):
         if not os.path.isfile(path):
             continue
         
-        # try:
-        image = Image.open(path)
+        try:
+            image = Image.open(path)
+        except Exception:
+            continue
+        
         exif = image._getexif()
+        image.close()
 
         if exif is None or DATE_TIME_TAKEN_K not in exif:
-            prev_image = Image.open(prev)
             if verbose:
                 print(f"REPLACING EXIF FOR {path} WITH {prev}'s")
             if not dry_run:
-                replace_exif(prev_image, image, path)
+                replace_exif(prev, path)
         
         prev = path
 
